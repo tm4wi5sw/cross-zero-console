@@ -1,8 +1,3 @@
-from log import log
-Log = log("log.txt")
-
-# -*- coding: utf-8 -*-
-
 board = [None for x in range(9)]
 
 def empty(place):
@@ -24,26 +19,37 @@ def drawBoard():
         print(line)
         print("="*15)
 
-def inputPlace():
-    #for i in range(9):
+def inputPlace(z):
         place = None
-        drawBoard()
-        place = input("выберите место для 0 или X: ")
-        if place in "123456789":
-            place = int(place)
-            if empty(place):
-                board[place] = "X"
+        place = input("выберите место для " + z + ": ")
+        if place.isdigit():
+            place = int(place)-1
+            if (place in range(9)) and (empty(place)):
+                board[place] = z
+                return True
             else:
                 print("=" * 31 + "\nместо " + str (place+1) + " занято! выберите другое")
+                return False
+        else:
+            print("недопустиное значение!")
+            return False
 
-def result():
-    pass
+def result(step):
+    victory = ((0,1,2),(3,4,5),(6,7,8),(0,3,6),(1,4,7),(2,5,8),(0,4,8),(2,4,6))
+    for x in victory:
+        if (board[x[0]] == board[x[1]] == board[x[2]]) and (board[x[0]] != None):
+            print (board[x[0]], "победил!")
+            return True
+        else:
+            if step == 9:
+                print ("ничья!")
+                return True
+    return False
 
-#while not result():
-#drawBoard()
-inputPlace()
-inputPlace()
-inputPlace()
-inputPlace()
-inputPlace()
-Log.end()
+step = 0
+while not result(step):
+    drawBoard()
+    if step % 2 == 0:
+        if inputPlace("X"): step += 1
+    else:
+        if inputPlace("O"): step += 1
